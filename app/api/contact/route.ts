@@ -1,18 +1,15 @@
 import { NextResponse } from 'next/server';
 import { emailService, contactFormSchema } from '@/lib/email';
 
-// Mark route as dynamic and set runtime
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-// Add CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
-// Configure CORS if needed
 export async function OPTIONS() {
   return NextResponse.json({}, { 
     headers: corsHeaders,
@@ -22,15 +19,10 @@ export async function OPTIONS() {
 
 export async function POST(request: Request) {
   try {
-    // Parse the request body
     const body = await request.json();
-    console.log('Received form data:', body);
     
-    // Validate the request body
     const validation = contactFormSchema.safeParse(body);
-    
     if (!validation.success) {
-      console.error('Validation error:', validation.error.format());
       return NextResponse.json(
         { 
           success: false,
@@ -43,10 +35,8 @@ export async function POST(request: Request) {
         }
       );
     }
-
-    // Check if email service is configured
+    
     if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-      console.error('Email service not configured');
       return NextResponse.json(
         { 
           success: false,
@@ -59,11 +49,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // Send email
     try {
       await emailService.sendContactEmail(validation.data);
-      
-      // Return success response
       return NextResponse.json(
         {
           success: true,
@@ -76,7 +63,6 @@ export async function POST(request: Request) {
         }
       );
     } catch (emailError) {
-      console.error('Error sending email:', emailError);
       return NextResponse.json(
         { 
           success: false,
@@ -90,7 +76,6 @@ export async function POST(request: Request) {
       );
     }
   } catch (error) {
-    console.error('Unexpected error:', error);
     return NextResponse.json(
       { 
         success: false,

@@ -1,5 +1,4 @@
 "use client"
-
 import { motion } from "framer-motion"
 
 function FloatingPaths({ position }: { position: number }) {
@@ -12,10 +11,9 @@ function FloatingPaths({ position }: { position: number }) {
     } ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${
       684 - i * 5 * position
     } ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
-    color: `rgba(15,23,42,${0.1 + i * 0.03})`,
     width: 0.5 + i * 0.03,
   }))
-
+  
   return (
     <div className="absolute inset-0 pointer-events-none">
       <svg className="w-full h-full text-slate-500 dark:text-white" viewBox="0 0 696 316" fill="none">
@@ -33,9 +31,10 @@ function FloatingPaths({ position }: { position: number }) {
               pathOffset: [0, 1, 0],
             }}
             transition={{
-              duration: 20 + Math.random() * 10,
-              repeat: Number.POSITIVE_INFINITY,
+              duration: 15 + path.id * 0.5,
+              repeat: Infinity,
               ease: "linear",
+              times: [0, 0.5, 1],
             }}
           />
         ))}
@@ -46,12 +45,9 @@ function FloatingPaths({ position }: { position: number }) {
 
 export default function BackgroundPaths() {
   return (
-    <div className="relative w-full h-full overflow-hidden bg-white dark:bg-neutral-950">
-      <div className="absolute inset-0">
-        <FloatingPaths position={1} />
-        <FloatingPaths position={-1} />
-      </div>
+    <div className="relative w-full h-full overflow-hidden">
+      <FloatingPaths position={1} />
+      <FloatingPaths position={-1} />
     </div>
   )
 }
-

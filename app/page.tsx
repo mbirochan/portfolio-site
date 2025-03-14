@@ -1,8 +1,6 @@
 "use client";
-
 import * as React from 'react';
 import { useRef, useState, useEffect } from 'react';
-import { useInView } from 'react-intersection-observer';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
@@ -47,7 +45,6 @@ import {
   SiNumpy,
   SiSolidity
 } from 'react-icons/si';
-import { TbBrandCpp } from 'react-icons/tb';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -65,54 +62,58 @@ interface Project {
 }
 
 export default function Home() {
-  const headerRef = useRef<HTMLElement>(null);
   const sectionsRef = useRef<HTMLDivElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeSection, setActiveSection] = useState('about');
 
   useEffect(() => {
-    // Set up scroll tracking for each section
     const sections = document.querySelectorAll('.section');
     const observers: IntersectionObserver[] = [];
-
     const observerOptions = {
-      threshold: 0.3, // At least 30% of the section must be visible
-      rootMargin: '-20% 0px -20% 0px' // Adds a margin to when the observer triggers
+      threshold: 0.2,
+      rootMargin: '-10% 0px -10% 0px'
     };
-
+    
     sections.forEach((section) => {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            console.log('Section in view:', entry.target.id);
             setActiveSection(entry.target.id);
           }
         });
       }, observerOptions);
-
       observer.observe(section);
       observers.push(observer);
     });
-
-    // Cleanup
+    
     return () => {
       observers.forEach((observer) => observer.disconnect());
     };
   }, []);
 
-  // Animation effect for skills
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.skill-card', {
+      const skillCards = document.querySelectorAll('.skill-card');
+      console.log('Number of skill cards:', skillCards.length);
+
+      gsap.from(skillCards, {
         scrollTrigger: {
           trigger: '.skills-section',
-          start: 'top center',
-          end: 'bottom center',
-          toggleActions: 'play none none reverse',
+          start: 'top 80%',
+          end: 'bottom 20%',
+          toggleActions: 'play none none none',
+          markers: true,
+          onEnter: () => console.log('ScrollTrigger entered'),
         },
-        y: 50,
+        y: 30,
         opacity: 0,
-        duration: 0.8,
-        stagger: 0.2,
+        duration: 0.5,
+        stagger: 0.1,
+        ease: 'power2.out',
+        onComplete: () => {
+          gsap.set(skillCards, { opacity: 1, y: 0 });
+        }
       });
     });
 
@@ -120,36 +121,23 @@ export default function Home() {
   }, []);
 
   const skills: Skill[] = [
-    // Frontend
     { name: 'React', level: 90, category: 'Frontend', icon: FaReact },
     { name: 'Next.js', level: 85, category: 'Frontend', icon: SiNextdotjs },
     { name: 'JavaScript', level: 90, category: 'Frontend', icon: SiJavascript },
     { name: 'HTML/CSS', level: 88, category: 'Frontend', icon: FaHtml5 },
-    
-    // Backend
     { name: 'Node.js', level: 85, category: 'Backend', icon: FaNodeJs },
     { name: 'Express', level: 85, category: 'Backend', icon: SiExpress },
     { name: 'Python', level: 80, category: 'Backend', icon: FaPython },
-    
-    // Database
     { name: 'MongoDB', level: 85, category: 'Database', icon: SiMongodb },
     { name: 'PostgreSQL', level: 80, category: 'Database', icon: SiPostgresql },
     { name: 'Firebase', level: 85, category: 'Database', icon: SiFirebase },
-    
-    // Cloud
     { name: 'AWS', level: 75, category: 'Cloud', icon: FaAws },
-    
-    // Programming Languages
     { name: 'Java', level: 75, category: 'Languages', icon: FaJava },
     { name: 'C++', level: 75, category: 'Languages', icon: SiCplusplus },
     { name: 'C', level: 70, category: 'Languages', icon: SiC },
-    
-    // AI/ML
     { name: 'PyTorch', level: 70, category: 'AI/ML', icon: SiPytorch },
     { name: 'Scikit-learn', level: 75, category: 'AI/ML', icon: SiScikitlearn },
     { name: 'NumPy', level: 80, category: 'AI/ML', icon: SiNumpy },
-    
-    // Blockchain
     { name: 'Solidity', level: 75, category: 'Blockchain', icon: SiSolidity },
   ];
 
@@ -157,17 +145,17 @@ export default function Home() {
     {
       title: 'AI-powered Voice Converter',
       description: 'I fine-tuned a voice model to convert any song to my voice.',
-      link: 'https://github.com/username/project1',
+      link: 'https://github.com/mbirochan'
     },
     {
       title: 'Blog Site with React Native',
       description: 'A blog site built with React Native and Firebase for real-time data storage. I post my blogs here.',
-      link: 'https://github.com/username/project2',
+      link: 'https://github.com/mbirochan'
     },
     {
       title: 'Personal Portfolio Website',
       description: 'A personal portfolio website built with Next.js and Tailwind CSS.',
-      link: 'https://github.com/username/project3',
+      link: 'https://github.com/mbirochan'
     },
   ];
 
@@ -191,7 +179,6 @@ export default function Home() {
       <div className="absolute inset-0 -z-10">
         <BackgroundPaths />
       </div>
-      {/* Sidebar */}
       <div
         className={`fixed left-0 top-0 h-full bg-card/80 backdrop-blur-sm border-r transition-all duration-300 ${
           sidebarOpen ? 'w-64' : 'w-16'
@@ -225,15 +212,12 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {/* Main Content */}
       <div
         className={`flex-1 overflow-y-auto transition-all duration-300 ${
           sidebarOpen ? 'ml-64' : 'ml-16'
         }`}
         ref={sectionsRef}
       >
-        {/* About Section */}
         <section id="about" className="section min-h-screen flex items-center p-8">
           <div className="container">
             <motion.div
@@ -265,20 +249,24 @@ export default function Home() {
             </motion.div>
           </div>
         </section>
-
-        {/* Skills Section */}
-        <section id="skills" className="section min-h-screen p-8">
+        <section id="skills" className="section min-h-screen p-8 skills-section">
           <div className="container">
             <h2 className="text-3xl font-bold mb-8">Skills</h2>
             <div className="space-y-8">
               {['Frontend', 'Backend', 'Database', 'Cloud', 'Languages', 'AI/ML', 'Blockchain'].map((category) => {
                 const categorySkills = skills.filter((skill) => skill.category === category);
-                return categorySkills.length > 0 ? (
+                console.log(`${category} skills:`, categorySkills.length);
+                
+                return (
                   <div key={category} className="mb-8">
                     <h3 className="text-2xl font-semibold mb-6">{category}</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {categorySkills.map((skill) => (
-                        <Card key={skill.name} className="p-6">
+                        <Card 
+                          key={skill.name} 
+                          className="p-6 skill-card hover:shadow-lg transition-shadow"
+                          style={{ opacity: 1 }}
+                        >
                           <div className="flex items-center gap-3 mb-3">
                             {React.createElement(skill.icon, {
                               className: "h-5 w-5 text-primary"
@@ -296,13 +284,11 @@ export default function Home() {
                       ))}
                     </div>
                   </div>
-                ) : null;
+                );
               })}
             </div>
           </div>
         </section>
-
-        {/* Education Section */}
         <section id="education" className="section min-h-screen p-8">
           <div className="container">
             <h2 className="text-3xl font-bold mb-8">Education</h2>
@@ -312,19 +298,16 @@ export default function Home() {
                 <p className="text-muted-foreground">Bachelor of Science in Computer Science</p>
                 <p className="text-sm text-muted-foreground mt-2">January 2025 - December 2025</p>
               </Card>
-
               <Card className="p-6">
                 <h3 className="text-xl font-semibold">Dallas College</h3>
                 <p className="text-muted-foreground">Computer Science</p>
                 <p className="text-sm text-muted-foreground mt-2">January 2023 - December 2024</p>
               </Card>
-
               <Card className="p-6">
                 <h3 className="text-xl font-semibold">Truman State University</h3>
                 <p className="text-muted-foreground">Computer Science</p>
                 <p className="text-sm text-muted-foreground mt-2">August 2022 - December 2022</p>
               </Card>
-
               <Card className="p-6">
                 <h3 className="text-xl font-semibold">Institute of Engineering, Pulchowk Campus</h3>
                 <p className="text-muted-foreground">Computer Engineering</p>
@@ -333,8 +316,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        {/* Projects Section */}
         <section id="projects" className="section min-h-screen p-8">
           <div className="container">
             <h2 className="text-3xl font-bold mb-8">Projects</h2>
@@ -344,7 +325,7 @@ export default function Home() {
                   <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
                   <p className="text-muted-foreground mb-4">{project.description}</p>
                   <Button variant="outline" asChild>
-                    <a href="https://github.com/mbirochan" target="_blank" rel="noopener noreferrer">
+                    <a href={project.link} target="_blank" rel="noopener noreferrer">
                       View Project
                     </a>
                   </Button>
@@ -353,8 +334,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        {/* Contact Section */}
         <section id="contact" className="section min-h-screen p-8">
           <ContactForm />
         </section>

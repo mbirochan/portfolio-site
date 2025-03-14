@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 
 interface TextScrambleProps {
@@ -9,21 +8,19 @@ interface TextScrambleProps {
 
 export function TextScramble({ text, className }: TextScrambleProps) {
   const [displayText, setDisplayText] = useState('');
-  // Only using letters for the scramble effect
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-
+  
   useEffect(() => {
     let frame = 0;
-    let resolveAnimation: () => void;
     const finalText = text;
     let currentText = '';
-    const frames = 1.5; // Reduced frames for faster animation
-    const duration = 100; // 1 second duration
+    const frames = 1.5; 
+    const duration = 100; 
     const totalSteps = finalText.length;
     const stepDuration = duration / totalSteps;
-
+    
     const randomChar = () => characters[Math.floor(Math.random() * characters.length)];
-
+    
     const animate = () => {
       let newText = '';
       let complete = 0;
@@ -36,35 +33,24 @@ export function TextScramble({ text, className }: TextScrambleProps) {
           newText += randomChar();
         }
       }
-
+      
       setDisplayText(newText);
-
+      
       if (complete < finalText.length) {
         if (frame % frames === 0) {
-          currentText = finalText.slice(0, currentText.length + 1);
+          currentText = finalText.substring(0, currentText.length + 1);
         }
         frame++;
-        setTimeout(() => requestAnimationFrame(animate), stepDuration);
-      } else if (resolveAnimation) {
-        resolveAnimation();
+        setTimeout(animate, stepDuration);
       }
     };
-
-    const startAnimation = () => {
-      return new Promise<void>((resolve) => {
-        resolveAnimation = resolve;
-        frame = 0;
-        currentText = '';
-        animate();
-      });
-    };
-
-    startAnimation();
-
+    
+    animate();
+    
     return () => {
-      resolveAnimation?.();
+      currentText = '';
     };
-  }, [text]);
-
+  }, [text, characters]);
+  
   return <span className={className}>{displayText}</span>;
 } 
