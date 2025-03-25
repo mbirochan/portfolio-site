@@ -92,34 +92,6 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const skillCards = document.querySelectorAll('.skill-card');
-      console.log('Number of skill cards:', skillCards.length);
-
-      gsap.from(skillCards, {
-        scrollTrigger: {
-          trigger: '.skills-section',
-          start: 'top 80%',
-          end: 'bottom 20%',
-          toggleActions: 'play none none none',
-          markers: true,
-          onEnter: () => console.log('ScrollTrigger entered'),
-        },
-        y: 30,
-        opacity: 0,
-        duration: 0.5,
-        stagger: 0.1,
-        ease: 'power2.out',
-        onComplete: () => {
-          gsap.set(skillCards, { opacity: 1, y: 0 });
-        }
-      });
-    });
-
-    return () => ctx.revert();
-  }, []);
-
   const skills: Skill[] = [
     { name: 'React', level: 90, category: 'Frontend', icon: FaReact },
     { name: 'Next.js', level: 85, category: 'Frontend', icon: SiNextdotjs },
@@ -255,17 +227,19 @@ export default function Home() {
             <div className="space-y-8">
               {['Frontend', 'Backend', 'Database', 'Cloud', 'Languages', 'AI/ML', 'Blockchain'].map((category) => {
                 const categorySkills = skills.filter((skill) => skill.category === category);
-                console.log(`${category} skills:`, categorySkills.length);
                 
                 return (
                   <div key={category} className="mb-8">
                     <h3 className="text-2xl font-semibold mb-6">{category}</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {categorySkills.map((skill) => (
+                      {categorySkills.map((skill, index) => (
                         <Card 
                           key={skill.name} 
-                          className="p-6 skill-card hover:shadow-lg transition-shadow"
-                          style={{ opacity: 1 }}
+                          className="p-6 skill-card opacity-0 animate-fadeIn"
+                          style={{
+                            animationDelay: `${index * 100}ms`,
+                            animationFillMode: 'forwards'
+                          }}
                         >
                           <div className="flex items-center gap-3 mb-3">
                             {React.createElement(skill.icon, {
