@@ -129,6 +129,11 @@ export default function Home() {
       description: 'A personal portfolio website built with Next.js and Tailwind CSS.',
       link: 'https://github.com/mbirochan'
     },
+    {
+      title: 'Blog Site with React',
+      description: 'A blog site built with React and Firebase for real-time data storage. I post my blogs here.',
+      link: 'https://github.com/mbirochan'
+    },
   ];
 
   const sections = [
