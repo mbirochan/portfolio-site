@@ -15,7 +15,8 @@ import {
   Briefcase,
   Mail,
   Github,
-  Linkedin 
+  Linkedin,
+  BookOpen
 } from 'lucide-react';
 import { ContactForm } from '@/components/ContactForm';
 import { TextScramble } from '@/components/TextScramble';
@@ -221,6 +222,12 @@ export default function Home() {
                   <a href="https://www.linkedin.com/in/birochan-mainali-8513561aa/" target="_blank" rel="noopener noreferrer">
                     <Linkedin className="mr-2 h-5 w-5" />
                     LinkedIn
+                  </a>
+                </Button>
+                <Button variant="outline" size="lg" asChild>
+                  <a href="https://blog-delta-ashy-90.vercel.app/" target="_blank" rel="noopener noreferrer">
+                    <BookOpen className="mr-2 h-5 w-5" />
+                    Blog
                   </a>
                 </Button>
               </div>
