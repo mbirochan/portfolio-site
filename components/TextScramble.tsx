@@ -6,51 +6,43 @@ interface TextScrambleProps {
   className?: string;
 }
 
+const CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
 export function TextScramble({ text, className }: TextScrambleProps) {
   const [displayText, setDisplayText] = useState('');
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  
+
   useEffect(() => {
     let frame = 0;
-    const finalText = text;
-    let currentText = '';
-    const frames = 1.5; 
-    const duration = 100; 
-    const totalSteps = finalText.length;
-    const stepDuration = duration / totalSteps;
-    
-    const randomChar = () => characters[Math.floor(Math.random() * characters.length)];
-    
+    let revealed = 0;
+    const frames = 1.5;
+    const stepDuration = 100 / text.length;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let cancelled = false;
+
+    const randomChar = () => CHARACTERS[Math.floor(Math.random() * CHARACTERS.length)];
+
     const animate = () => {
-      let newText = '';
-      let complete = 0;
-      
-      for (let i = 0; i < finalText.length; i++) {
-        if (i < currentText.length) {
-          newText += finalText[i];
-          complete++;
-        } else {
-          newText += randomChar();
-        }
+      if (cancelled) return;
+      let next = '';
+      for (let i = 0; i < text.length; i++) {
+        next += i < revealed ? text[i] : randomChar();
       }
-      
-      setDisplayText(newText);
-      
-      if (complete < finalText.length) {
-        if (frame % frames === 0) {
-          currentText = finalText.substring(0, currentText.length + 1);
-        }
+      setDisplayText(next);
+
+      if (revealed < text.length) {
+        if (frame % frames === 0) revealed++;
         frame++;
-        setTimeout(animate, stepDuration);
+        timeoutId = setTimeout(animate, stepDuration);
       }
     };
-    
+
     animate();
-    
+
     return () => {
-      currentText = '';
+      cancelled = true;
+      if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [text, characters]);
-  
+  }, [text]);
+
   return <span className={className}>{displayText}</span>;
-} 
+}

@@ -2,18 +2,13 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-const formSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address').optional().or(z.literal('')),
-  subject: z.string().min(5, 'Subject must be at least 5 characters'),
-  message: z.string().min(10, 'Message must be at least 10 characters'),
-});
-type FormData = z.infer<typeof formSchema>;
+import { contactFormSchema, type ContactFormData } from '@/lib/email';
+
+type FormData = ContactFormData;
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -23,7 +18,7 @@ export function ContactForm() {
     reset,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(contactFormSchema),
   });
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
@@ -33,7 +28,7 @@ export function ContactForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      const result = await response.json();
+      const result = await response.json().catch(() => ({}));
       if (response.ok && result.success) {
         toast({
           title: 'Success!',
@@ -41,14 +36,17 @@ export function ContactForm() {
         });
         reset();
       } else {
-        throw new Error(result.message || `Server error: ${response.status}`);
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: result.error || 'Failed to send message. Please try again.',
+        });
       }
-    } catch (error) {
+    } catch {
       toast({
+        variant: 'destructive',
         title: 'Error',
-        description: error instanceof Error 
-          ? error.message
-          : 'An unexpected error occurred. Please try again.',
+        description: 'An unexpected error occurred. Please try again.',
       });
     } finally {
       setIsSubmitting(false);
