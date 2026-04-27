@@ -1,14 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
+import ArthaHowItWorks from '@/components/ArthaHowItWorks';
 
-type SectionId = 'hero' | 'skills' | 'projects' | 'blog' | 'education' | 'contact';
+type SectionId = 'hero' | 'skills' | 'artha' | 'projects' | 'blog' | 'education' | 'contact';
 
-const NAVS: SectionId[] = ['hero', 'skills', 'projects', 'blog', 'education', 'contact'];
+const NAVS: SectionId[] = ['hero', 'skills', 'artha', 'projects', 'blog', 'education', 'contact'];
 const NAV_LABELS: Record<SectionId, string> = {
   hero: 'Home',
   skills: 'Skills',
+  artha: 'Artha Network',
   projects: 'Projects',
   blog: 'Blog',
   education: 'Education',
@@ -18,6 +20,9 @@ const NAV_LABELS: Record<SectionId, string> = {
 const BLOG_URL = 'https://blog-delta-ashy-90.vercel.app/';
 const GITHUB_URL = 'https://github.com/mbirochan';
 const LINKEDIN_URL = 'https://www.linkedin.com/in/birochan-mainali-8513561aa/';
+const LEETCODE_URL = 'https://leetcode.com/u/birochan/';
+const EMAIL = 'mbirochan@gmail.com';
+const ARTHA_GITHUB_URL = 'https://github.com/Artha-Network';
 
 function useScramble(text: string) {
   const [display, setDisplay] = useState('');
@@ -105,12 +110,12 @@ function ProfilePhoto() {
     <Image
       src="/assets/profile-picture.png"
       alt="Birochan Mainali"
-      width={220}
-      height={220}
+      width={200}
+      height={200}
       priority
       style={{
-        width: 220,
-        height: 220,
+        width: 200,
+        height: 200,
         borderRadius: '50%',
         objectFit: 'cover',
         border: '2px solid oklch(0.72 0.14 190 / 0.4)',
@@ -121,15 +126,28 @@ function ProfilePhoto() {
   );
 }
 
-const GithubIcon = ({ size = 16 }: { size?: number }) => (
+const GithubIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
     <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
   </svg>
 );
 
-const LinkedInIcon = ({ size = 16 }: { size?: number }) => (
+const LinkedInIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+  </svg>
+);
+
+const LeetCodeIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z" />
+  </svg>
+);
+
+const MailIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
   </svg>
 );
 
@@ -148,23 +166,27 @@ function Hero() {
           <ProfilePhoto />
         </div>
         <div>
-          <p className="hero-eyebrow reveal reveal-delay-1">CS Student · Full Stack · Blockchain</p>
+          <p className="hero-eyebrow reveal reveal-delay-1">Software Engineer · Blockchain · Fintech</p>
           <h1 className="hero-name reveal reveal-delay-2">{name}</h1>
           <p className="hero-role reveal reveal-delay-3">
-            Building <span>web apps</span>, <span style={{ color: 'var(--gold)' }}>DeFi protocols</span> & fintech products
+            <span>I build software that moves real money at scale</span>
           </p>
           <p className="hero-bio reveal reveal-delay-4">
-            Computer Science student at UNT with a passion for decentralized systems, AI-driven applications, and elegant
-            full-stack engineering.
+            Computer Science senior at UNT. Creator of Artha Network, a decentralized escrow protocol on Solana with
+            AI-driven arbitration. 80,000+ lines of code and counting.
           </p>
           <div className="hero-btns reveal reveal-delay-4">
             <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-              <GithubIcon />
-              GitHub
+              <GithubIcon /> GitHub
             </a>
             <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
-              <LinkedInIcon />
-              LinkedIn
+              <LinkedInIcon /> LinkedIn
+            </a>
+            <a href={LEETCODE_URL} target="_blank" rel="noopener noreferrer" className="icon-link" title="LeetCode">
+              <LeetCodeIcon />
+            </a>
+            <a href={`mailto:${EMAIL}`} className="icon-link" title="Email">
+              <MailIcon />
             </a>
           </div>
         </div>
@@ -178,13 +200,13 @@ function Hero() {
 }
 
 const SKILLS: Record<string, string[]> = {
-  Frontend: ['React', 'Next.js', 'JavaScript', 'HTML/CSS'],
-  Backend: ['Node.js', 'Express', 'Python'],
-  Database: ['MongoDB', 'PostgreSQL', 'Firebase'],
-  Cloud: ['AWS', 'Docker'],
-  Languages: ['Java', 'C++', 'C'],
-  'AI / ML': ['PyTorch', 'Scikit-learn', 'NumPy'],
-  Blockchain: ['Solidity', 'Web3', 'DeFi'],
+  Frontend: ['React', 'Next.js', 'Tailwind CSS', 'shadcn/ui', 'JavaScript', 'TypeScript', 'HTML/CSS'],
+  Backend: ['Node.js', 'NestJS', 'Express', 'Prisma', 'REST APIs'],
+  Database: ['PostgreSQL', 'MongoDB', 'Supabase', 'Redis', 'Firebase'],
+  Cloud: ['AWS (In Progress)', 'Docker', 'GitHub Actions', 'Linux'],
+  Languages: ['TypeScript', 'JavaScript', 'Rust', 'Python', 'Java', 'C++', 'C', 'SQL'],
+  'AI / ML': ['Claude AI Integration', 'AI Pipeline Architecture'],
+  Blockchain: ['Rust', 'Anchor Framework', 'Solana', 'SPL Tokens', 'PDAs', 'CPIs', 'CBOR', 'ed25519', 'IPFS', 'USDC'],
 };
 
 const CAT_COLORS: Record<string, string> = {
@@ -231,39 +253,219 @@ function Skills() {
   );
 }
 
+const ARCH_LAYERS = [
+  {
+    num: 'Layer 1',
+    name: 'Frontend',
+    tech: 'Next.js + Tailwind + shadcn/ui',
+    desc: 'Wallet onboarding, transaction UI, dispute dashboard',
+  },
+  {
+    num: 'Layer 2',
+    name: 'Actions Server',
+    tech: 'NestJS + Prisma',
+    desc: 'APIs, fee-payer policy, dispute management, webhooks',
+  },
+  {
+    num: 'Layer 3',
+    name: 'On-Chain Escrow Program',
+    tech: 'Rust / Anchor on Solana',
+    desc: 'Secure fund custody, state management, PDAs + CPIs',
+  },
+  {
+    num: 'Layer 4',
+    name: 'AI Arbiter Service',
+    tech: 'Claude AI + CBOR + ed25519',
+    desc: 'Cryptographically signed settlement verdicts',
+  },
+];
+
+type FlowItem =
+  | { kind: 'pill'; label: string; cls: string }
+  | { kind: 'arrow' }
+  | { kind: 'sep' };
+
+const FLOW_STATES: FlowItem[] = [
+  { kind: 'pill', label: 'INIT', cls: 'state-init' },
+  { kind: 'arrow' },
+  { kind: 'pill', label: 'FUNDED', cls: 'state-funded' },
+  { kind: 'arrow' },
+  { kind: 'pill', label: 'RELEASED', cls: 'state-released' },
+  { kind: 'sep' },
+  { kind: 'pill', label: 'DISPUTED', cls: 'state-disputed' },
+  { kind: 'arrow' },
+  { kind: 'pill', label: 'EVIDENCE', cls: 'state-evidence' },
+  { kind: 'arrow' },
+  { kind: 'pill', label: 'AI ARBITRATION', cls: 'state-ai' },
+  { kind: 'arrow' },
+  { kind: 'pill', label: 'REFUNDED', cls: 'state-refunded' },
+];
+
+const ARTHA_TAGS = [
+  'Rust',
+  'Anchor',
+  'Solana',
+  'TypeScript',
+  'NestJS',
+  'Prisma',
+  'Next.js',
+  'Tailwind',
+  'shadcn/ui',
+  'Supabase',
+  'PostgreSQL',
+  'CBOR',
+  'ed25519',
+  'IPFS',
+  'USDC',
+];
+
+function ArthaNetwork() {
+  return (
+    <section id="artha" className="section artha-section">
+      <div className="artha-header reveal">
+        <div>
+          <p className="sec-label">03 — Featured Project</p>
+          <h2 className="artha-title">Artha Network</h2>
+          <p className="artha-subtitle">Decentralized AI-Powered Escrow Protocol</p>
+        </div>
+        <a
+          href={ARTHA_GITHUB_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-outline artha-cta"
+        >
+          View on GitHub <ArrowRightIcon />
+        </a>
+      </div>
+
+      <div className="artha-body reveal reveal-delay-1">
+        <div className="artha-card">
+          <p className="artha-card-label">The Problem</p>
+          <p>
+            I built this because I&apos;ve lived the problem. I&apos;ve been on the wrong end of peer-to-peer
+            transactions — scams, broken trust, no recourse. Traditional escrow services exist, but they cost too much
+            to justify for everyday deals like buying a used car or paying a freelancer. That cost barrier kills the
+            velocity of money.
+          </p>
+        </div>
+        <div className="artha-card">
+          <p className="artha-card-label">The Solution</p>
+          <p>
+            A non-custodial escrow protocol on Solana using smart contracts and AI arbitration, settled in USDC for
+            real-world usability. Blockchain and AI make escrow dead cheap and reliable, increasing the velocity of
+            money and making crypto adoption practical for day-to-day transactions.
+          </p>
+        </div>
+      </div>
+
+      <div className="arch-wrap reveal reveal-delay-2">
+        <p className="arch-title">Architecture</p>
+        <div className="arch-diagram">
+          <div className="arch-layers">
+            {ARCH_LAYERS.map((layer, i) => (
+              <Fragment key={layer.num}>
+                <div className="arch-layer">
+                  <p className="arch-layer-num">{layer.num}</p>
+                  <p className="arch-layer-name">{layer.name}</p>
+                  <p className="arch-layer-tech">{layer.tech}</p>
+                  <p className="arch-layer-desc">{layer.desc}</p>
+                </div>
+                {i < ARCH_LAYERS.length - 1 && (
+                  <div className="arch-connector">
+                    <div className="arch-connector-stack">
+                      <div className="arch-connector-line" />
+                      <span className="arch-connector-arrow">▼</span>
+                    </div>
+                  </div>
+                )}
+              </Fragment>
+            ))}
+          </div>
+          <div className="arch-db">
+            <p className="arch-db-label">Database</p>
+            <p className="arch-db-name">Supabase / PostgreSQL</p>
+            <p className="arch-db-tech">Persistent state + dispute records</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flow-wrap reveal reveal-delay-3">
+        <p className="flow-title">Transaction Lifecycle</p>
+        <div className="flow-states">
+          {FLOW_STATES.map((s, i) => {
+            if (s.kind === 'arrow') return <span key={i} className="flow-arrow">→</span>;
+            if (s.kind === 'sep') return <span key={i} className="flow-sep">/</span>;
+            return <span key={i} className={`flow-pill ${s.cls}`}>{s.label}</span>;
+          })}
+        </div>
+      </div>
+
+      <div className="hiw-wrap reveal reveal-delay-2">
+        <div className="hiw-header">
+          <p className="hiw-label">How it works</p>
+          <p className="hiw-sub">15-second walkthrough · loops automatically</p>
+        </div>
+        <ArthaHowItWorks />
+      </div>
+
+      <div className="reveal reveal-delay-3">
+        <p className="tag-section-label">Tech Stack</p>
+        <div className="tag-row">
+          {ARTHA_TAGS.map((t) => (
+            <span key={t} className="tag">
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="role-card reveal reveal-delay-3">
+        <p className="role-label">My Role</p>
+        <p className="role-text">
+          Founded the Artha Network GitHub organization. Led a 4-person engineering team across 4+ agile sprints. Wrote
+          80,000+ lines of code across 6 repositories. Authored the project whitepaper, architecture documentation, and
+          developer onboarding materials.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 type ProjectTagColor = 'teal' | 'gold';
 interface Project {
   title: string;
   desc: string;
   tags: [string, ProjectTagColor][];
   link: string;
+  blog?: string;
 }
 
 const PROJECTS: Project[] = [
   {
-    title: 'AI-Powered Voice Converter',
-    desc: 'Fine-tuned a voice model to convert any song to my voice. Custom ML pipeline with real-time audio processing.',
+    title: 'Smoke Shop Aggregator Platform',
+    desc: 'Full-stack e-commerce platform with age-gated catalog, zone-based delivery routing, and PACT Act regulatory compliance for tobacco retail.',
     tags: [
-      ['Python', 'teal'],
-      ['PyTorch', 'teal'],
-      ['ML', 'teal'],
+      ['React', 'teal'],
+      ['Node.js', 'teal'],
+      ['Express', 'teal'],
+      ['MongoDB', 'gold'],
     ],
     link: 'https://github.com/mbirochan',
+    blog: 'https://blog-delta-ashy-90.vercel.app/blog/the-last-retail-category-amazon-won-t-touch',
   },
   {
-    title: 'Escrow DApp + AI Agents',
-    desc: 'Decentralized escrow protocol with AI agents handling decision making and smart contract drafting on-chain.',
+    title: 'Classmate Social Graph',
+    desc: "Social networking app using Dijkstra's algorithm to recommend connections via dynamically weighted graph edges based on profile interaction data.",
     tags: [
-      ['Solidity', 'gold'],
-      ['Ethereum', 'gold'],
-      ['AI Agents', 'teal'],
-      ['Web3', 'gold'],
+      ['React', 'teal'],
+      ['MongoDB', 'gold'],
+      ['JavaScript', 'teal'],
     ],
-    link: 'https://github.com/mbirochan',
+    link: 'https://github.com/mbirochan/Social-Network-Graph',
   },
   {
-    title: 'Blog Platform (React Native)',
-    desc: 'Mobile-first blog application with real-time data syncing, auth, and rich text editing powered by Firebase.',
+    title: 'Blog Platform',
+    desc: 'Mobile-first blog application with real-time data syncing, authentication, and rich text editing.',
     tags: [
       ['React Native', 'teal'],
       ['Firebase', 'gold'],
@@ -272,12 +474,13 @@ const PROJECTS: Project[] = [
     link: 'https://blog-delta-ashy-90.vercel.app/',
   },
   {
-    title: 'Portfolio Website',
-    desc: "This portfolio — a performant single-page app with smooth animations, a dark fintech aesthetic, and responsive design.",
+    title: 'JWKS Server Security Extension',
+    desc: 'Cryptographic key management server with persistent RSA key storage in SQLite and SQL injection hardening via parameterized queries.',
     tags: [
-      ['Next.js', 'teal'],
-      ['Tailwind', 'teal'],
-      ['GSAP', 'gold'],
+      ['Python', 'teal'],
+      ['SQLite', 'gold'],
+      ['JWT', 'teal'],
+      ['RSA', 'gold'],
     ],
     link: 'https://github.com/mbirochan',
   },
@@ -286,8 +489,8 @@ const PROJECTS: Project[] = [
 function Projects() {
   return (
     <section id="projects" className="section">
-      <p className="sec-label reveal">03 — Projects</p>
-      <h2 className="sec-title reveal reveal-delay-1">Things I&apos;ve built</h2>
+      <p className="sec-label reveal">04 — Projects</p>
+      <h2 className="sec-title reveal reveal-delay-1">Other things I&apos;ve built</h2>
       <div className="projects-grid">
         {PROJECTS.map((p, i) => (
           <div key={p.title} className={`project-card reveal reveal-delay-${(i % 3) + 1}`}>
@@ -301,10 +504,23 @@ function Projects() {
                 </span>
               ))}
             </div>
-            <a href={p.link} target="_blank" rel="noopener noreferrer" className="project-link">
-              View on GitHub
-              <ArrowRightIcon />
-            </a>
+            <div className="project-links">
+              <a href={p.link} target="_blank" rel="noopener noreferrer" className="project-link">
+                View on GitHub
+                <ArrowRightIcon />
+              </a>
+              {p.blog && (
+                <a
+                  href={p.blog}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="project-link project-link-gold"
+                >
+                  Read the blog
+                  <ArrowRightIcon />
+                </a>
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -317,14 +533,14 @@ function Blog() {
     <section id="blog" className="section" style={{ minHeight: 'auto', paddingTop: 60, paddingBottom: 60 }}>
       <div className="blog-banner reveal">
         <div className="blog-banner-text">
-          <p className="blog-banner-label">04 — Writing</p>
+          <p className="blog-banner-label">05 — Writing</p>
           <h2 className="blog-banner-title">
             I write about tech,
             <br />
             crypto &amp; building things
           </h2>
           <p className="blog-banner-sub">
-            Thoughts on DeFi, full-stack development, AI, and the craft of engineering software. Published on my blog.
+            Thoughts on DeFi, full-stack development, AI, and the craft of engineering software.
           </p>
         </div>
         <div className="blog-banner-cta">
@@ -338,17 +554,44 @@ function Blog() {
   );
 }
 
-const EDU = [
-  { school: 'University of North Texas', degree: 'BS Computer Science', date: 'Jan 2025 – Dec 2025' },
-  { school: 'Dallas College', degree: 'Computer Science', date: 'Jan 2023 – Dec 2024' },
-  { school: 'Truman State University', degree: 'Computer Science', date: 'Aug 2022 – Dec 2022' },
-  { school: 'Pulchowk Campus, IOE', degree: 'Computer Engineering', date: 'Jan 2022 – Apr 2022' },
+interface EduItem {
+  date: string;
+  school: string;
+  degree: string;
+  gpa?: string;
+  courses?: string;
+}
+
+const EDU: EduItem[] = [
+  {
+    date: 'Jan 2025 – May 2026 (Expected)',
+    school: 'University of North Texas',
+    degree: 'BS Computer Science',
+    gpa: 'GPA: 3.9 / 4.0',
+    courses:
+      'Applied AI, Machine Learning, Algorithms, Cybersecurity, Data Structures, Software Engineering, Systems Programming, Database Systems, Computer Networks',
+  },
+  {
+    date: 'Jan 2023 – Dec 2024',
+    school: 'Dallas College',
+    degree: 'Computer Science, Mathematics, Physics (Transfer)',
+  },
+  {
+    date: 'Aug 2022 – Dec 2022',
+    school: 'Truman State University',
+    degree: 'Computer Science, Mathematics (Transfer)',
+  },
+  {
+    date: 'Jan 2022 – Apr 2022',
+    school: 'Pulchowk Campus, IOE',
+    degree: 'Computer Engineering',
+  },
 ];
 
 function Education() {
   return (
     <section id="education" className="section">
-      <p className="sec-label reveal">05 — Education</p>
+      <p className="sec-label reveal">06 — Education</p>
       <h2 className="sec-title reveal reveal-delay-1">Academic path</h2>
       <div className="timeline">
         {EDU.map((e, i) => (
@@ -360,6 +603,8 @@ function Education() {
             <div className="tl-content">
               <p className="tl-school">{e.school}</p>
               <p className="tl-degree">{e.degree}</p>
+              {e.gpa && <p className="tl-gpa">{e.gpa}</p>}
+              {e.courses && <p className="tl-courses">Relevant Coursework: {e.courses}</p>}
             </div>
           </div>
         ))}
@@ -409,7 +654,7 @@ function Contact() {
     <section id="contact" className="section">
       <div className="contact-grid">
         <div>
-          <p className="sec-label reveal">06 — Contact</p>
+          <p className="sec-label reveal">07 — Contact</p>
           <h2 className="sec-title reveal reveal-delay-1" style={{ marginBottom: 16 }}>
             Let&apos;s work together
           </h2>
@@ -417,17 +662,21 @@ function Contact() {
             className="reveal reveal-delay-2"
             style={{ color: 'var(--muted)', fontSize: 16, lineHeight: 1.7 }}
           >
-            Open to collaborations, freelance projects, and full-time opportunities in web3, fintech, and full-stack
-            engineering.
+            Open to opportunities in blockchain engineering, fintech, backend infrastructure, and full-stack
+            development.
           </p>
           <div className="contact-links reveal reveal-delay-3">
             <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
-              <GithubIcon />
-              GitHub
+              <GithubIcon /> GitHub
             </a>
             <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
-              <LinkedInIcon />
-              LinkedIn
+              <LinkedInIcon /> LinkedIn
+            </a>
+            <a href={LEETCODE_URL} target="_blank" rel="noopener noreferrer" className="icon-link" title="LeetCode">
+              <LeetCodeIcon />
+            </a>
+            <a href={`mailto:${EMAIL}`} className="icon-link" title={EMAIL}>
+              <MailIcon />
             </a>
           </div>
         </div>
@@ -696,6 +945,7 @@ export default function Page() {
       <Nav active={active} />
       <Hero />
       <Skills />
+      <ArthaNetwork />
       <Projects />
       <Blog />
       <Education />
